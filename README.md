@@ -4,7 +4,7 @@
 
 ## - 게임 이미지
 
-![term_image](D:\SGP\Turmproject\SPGPturm_2015180009\image\term_image.png)
+![term_image](./image/term_image.png)
 
 ## - UI
 
