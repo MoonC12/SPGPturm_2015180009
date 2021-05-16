@@ -13,6 +13,7 @@ public class Player implements GameObject, BoxCollidable {
     private static final int BULLET_SPEED = 1500;
     private static final float FIRE_INTERVAL = 1.0f / 7.5f;
     private static final float LASER_DURATION = FIRE_INTERVAL / 3;
+    protected int hit;
     private float fireTime;
     private float x, y;
     private float tx, ty;
@@ -20,8 +21,9 @@ public class Player implements GameObject, BoxCollidable {
     private GameBitmap planeBitmap;
     private GameBitmap fireBitmap;
     float delta_x;
+    private float delta_tx;
 
-    public Player(float x, float y) {
+    public Player(float x, float y, int hit) {
         this.x = x;
         this.y = y;
         this.tx = x;
@@ -30,17 +32,19 @@ public class Player implements GameObject, BoxCollidable {
         this.planeBitmap = new GameBitmap(R.mipmap.fighter);
         this.fireBitmap = new GameBitmap(R.mipmap.laser_0);
         this.fireTime = 0.0f;
+        this.hit = hit;
     }
 
-    public void moveTo(float x, float y) {
+    public void moveTo(float x, float tx) {
         this.tx = x;
         delta_x = x - this.x;
+//        delta_tx = tx - this.tx;
         //this.ty = this.y;
     }
 
     public void update() {
         MainGame game = MainGame.get();
-//        float dx = speed * game.frameTime;
+        float dx = speed * game.frameTime;
         if (tx < x) { // move left
             delta_x = -delta_x;
         }

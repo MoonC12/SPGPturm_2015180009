@@ -1,12 +1,17 @@
 package kr.ac.kpu.game.s2015180009.dragonflight.game;
 
+import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import android.content.DialogInterface;
 import kr.ac.kpu.game.s2015180009.dragonflight.R;
 import kr.ac.kpu.game.s2015180009.dragonflight.framework.BoxCollidable;
 import kr.ac.kpu.game.s2015180009.dragonflight.framework.GameObject;
@@ -14,7 +19,7 @@ import kr.ac.kpu.game.s2015180009.dragonflight.framework.Recyclable;
 import kr.ac.kpu.game.s2015180009.dragonflight.ui.view.GameView;
 import kr.ac.kpu.game.s2015180009.dragonflight.utils.CollisionHelper;
 
-public class MainGame {
+public class MainGame extends AppCompatActivity {
     private static final String TAG = MainGame.class.getSimpleName();
     // singleton
     private static MainGame instance;
@@ -50,7 +55,7 @@ public class MainGame {
     }
 
     public enum Layer {
-        bg1, bg2, enemy, bullet, player, ui, controller, ENEMY_COUNT
+        bg1, bg2, enemy, bullet, player, meteor, ui, controller,controller2, ENEMY_COUNT
     }
     public boolean initResources() {
         if (initialized) {
@@ -61,10 +66,11 @@ public class MainGame {
 
         initLayers(Layer.ENEMY_COUNT.ordinal());
 
-        player = new Player(w/2, h - 300);
+        player = new Player(w/2, h - 300, 3);
         //layers.get(Layer.player.ordinal()).add(player);
         add(Layer.player, player);
         add(Layer.controller, new EnemyGenerator());
+//        add(Layer.controller2, new MeteorGenerator());
 
         int margin = (int) (20 * GameView.MULTIPLIER);
         score = new Score(w - margin, margin);
@@ -98,18 +104,40 @@ public class MainGame {
 
         ArrayList<GameObject> enemies = layers.get(Layer.enemy.ordinal());
         ArrayList<GameObject> bullets = layers.get(Layer.bullet.ordinal());
+        ArrayList<GameObject> meteors = layers.get(Layer.meteor.ordinal());
+
         for (GameObject o1: enemies) {
             Enemy enemy = (Enemy) o1;
             boolean collided = false;
             for (GameObject o2: bullets) {
                 Bullet bullet = (Bullet) o2;
                 if (CollisionHelper.collides(enemy, bullet)) {
-                    remove(bullet, false);
-                    
-                    remove(enemy, false);
-                    score.addScore(10);
+                    if(enemy.hit > 1){
+                        remove(bullet, false);
+                        enemy.hit = enemy.hit - 1;
+                        break;
+                    }
+                    if(enemy.hit == 1){
+                        remove(bullet, false);
+                        remove(enemy, false);
+                        score.addScore(10);
+                    }
                     collided = true;
                     break;
+                }
+            }
+
+            if(CollisionHelper.collides(enemy, player))
+            {
+                if(player.hit > 1){
+                    player.hit -= 1;
+                    remove(enemy, false);
+                    break;
+                }
+                if(player.hit == 1)
+                {
+                    remove(player);
+//                    askRestart();
                 }
             }
             if (collided) {
@@ -146,6 +174,23 @@ public class MainGame {
 //            }
 //        }
     }
+
+
+//    private void askRestart() {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        //String title = getResources().getString(R.string.restart_dialog_title);
+//        builder.setTitle(R.string.restart_dialog_title);
+//        builder.setMessage(R.string.restart_dialog_message);
+//        builder.setPositiveButton(R.string.common_yes, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+////                startGame();
+//            }
+//        });
+//        builder.setNegativeButton(R.string.common_no, null);
+//        AlertDialog alert = builder.create();
+//        alert.show();
+//    }
 
     public void draw(Canvas canvas) {
         //if (!initialized) return;
@@ -187,6 +232,7 @@ public class MainGame {
     public void remove(GameObject gameObject) {
         remove(gameObject, true);
     }
+
     public void remove(GameObject gameObject, boolean delayed) {
         Runnable runnable = new Runnable() {
             @Override
@@ -210,4 +256,6 @@ public class MainGame {
             runnable.run();
         }
     }
+
+
 }

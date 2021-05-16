@@ -1,24 +1,26 @@
 package kr.ac.kpu.game.s2015180009.dragonflight.game;
 
 import android.graphics.Canvas;
-import android.util.Log;
 
 import java.util.Random;
 
 import kr.ac.kpu.game.s2015180009.dragonflight.framework.GameObject;
 import kr.ac.kpu.game.s2015180009.dragonflight.ui.view.GameView;
 
-public class EnemyGenerator implements GameObject {
+public class MeteorGenerator implements GameObject {
 
-    private static final float INITIAL_SPAWN_INTERVAL = 2.0f;
-    private static final String TAG = EnemyGenerator.class.getSimpleName();
+    private static final float INITIAL_SPAWN_INTERVAL = 1.0f;
+    private static final String TAG = MeteorGenerator.class.getSimpleName();
     private float time;
     private float spawnInterval;
     private int wave;
 
-    public EnemyGenerator() {
-        time = INITIAL_SPAWN_INTERVAL;
-        spawnInterval = INITIAL_SPAWN_INTERVAL;
+    public MeteorGenerator() {
+        Random r = new Random();
+        int minValue = 30;
+        int maxValue = 10;
+        time = INITIAL_SPAWN_INTERVAL * r.nextInt(maxValue - minValue + 1) + minValue;
+        spawnInterval = INITIAL_SPAWN_INTERVAL * 10.0f;
         wave = 0;
     }
     @Override
@@ -39,12 +41,12 @@ public class EnemyGenerator implements GameObject {
         Random r = new Random();
         for (int i = 1; i <= 7; i += 2) {
             int x = tenth * i;
-            int[] y = {0, -150, -300, -450};
+            int y = 0;
             int level = wave / 10 - r.nextInt(3);
             if (level < 1) level = 1;
             if (level > 20) level = 20;
-            Enemy enemy = Enemy.get(level, x, y[i / 2], 700, level);
-            game.add(MainGame.Layer.enemy, enemy);
+            Meteor meteor = Meteor.get(x, y, 1400);
+            game.add(MainGame.Layer.meteor, meteor);
         }
     }
 
