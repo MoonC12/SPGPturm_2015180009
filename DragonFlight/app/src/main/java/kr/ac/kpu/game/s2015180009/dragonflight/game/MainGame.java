@@ -25,6 +25,7 @@ public class MainGame extends AppCompatActivity {
     private static MainGame instance;
     private Player player;
     private Score score;
+    private float oldXvalue;
 
     public static MainGame get() {
         if (instance == null) {
@@ -55,7 +56,7 @@ public class MainGame extends AppCompatActivity {
     }
 
     public enum Layer {
-        bg1, bg2, enemy, bullet, player, meteor, ui, controller,controller2, ENEMY_COUNT
+        bg1, bg2, enemy, bullet, player, coin, meteor, ui, controller, ENEMY_COUNT
     }
     public boolean initResources() {
         if (initialized) {
@@ -70,7 +71,7 @@ public class MainGame extends AppCompatActivity {
         //layers.get(Layer.player.ordinal()).add(player);
         add(Layer.player, player);
         add(Layer.controller, new EnemyGenerator());
-//        add(Layer.controller2, new MeteorGenerator());
+//        add(Layer.controller, new MeteorGenerator());
 
         int margin = (int) (20 * GameView.MULTIPLIER);
         score = new Score(w - margin, margin);
@@ -105,6 +106,7 @@ public class MainGame extends AppCompatActivity {
         ArrayList<GameObject> enemies = layers.get(Layer.enemy.ordinal());
         ArrayList<GameObject> bullets = layers.get(Layer.bullet.ordinal());
         ArrayList<GameObject> meteors = layers.get(Layer.meteor.ordinal());
+        ArrayList<GameObject> coins = layers.get(Layer.coin.ordinal());
 
         for (GameObject o1: enemies) {
             Enemy enemy = (Enemy) o1;
@@ -120,6 +122,7 @@ public class MainGame extends AppCompatActivity {
                     if(enemy.hit == 1){
                         remove(bullet, false);
                         remove(enemy, false);
+                        dropCoin(enemy.x, enemy.y);
                         score.addScore(10);
                     }
                     collided = true;
@@ -138,6 +141,26 @@ public class MainGame extends AppCompatActivity {
                 {
                     remove(player);
 //                    askRestart();
+                }
+            }
+            for(GameObject o3: meteors){
+                Meteor meteor = (Meteor) o3;
+                if(CollisionHelper.collides(meteor, player))
+                    {
+                        remove(player);
+                        remove(meteor);
+                        break;
+                    }
+            }
+
+            for(GameObject o4: coins){
+                Coin coin = (Coin) o4;
+                if(CollisionHelper.collides(coin, player))
+                {
+                    remove(coin);
+                    score.addScore(100);
+                    collided = true;
+                    break;
                 }
             }
             if (collided) {
@@ -201,9 +224,12 @@ public class MainGame extends AppCompatActivity {
         }
     }
 
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent( MotionEvent event) {
+
         int action = event.getAction();
+
 //        if (action == MotionEvent.ACTION_DOWN) {
+
         if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_MOVE) {
             player.moveTo(event.getX(), event.getY());
 //            int li = 0;
@@ -215,6 +241,18 @@ public class MainGame extends AppCompatActivity {
 //            }
             return true;
         }
+
+//        if (action == MotionEvent.ACTION_DOWN) {
+//            oldXvalue = event.getX();
+//        }
+//        else  if(action == MotionEvent.ACTION_MOVE){
+//            player.moveTo(view.getX() + (event.getX() - (view.getWidth()/2)));
+//        }
+//        else if(action == MotionEvent.ACTION_UP){
+//            if(view.getX() < 0){
+//                view.setX(0);
+//            }
+//        }
         return false;
     }
 
@@ -227,6 +265,12 @@ public class MainGame extends AppCompatActivity {
             }
         });
 //        Log.d(TAG, "<A> object count = " + objects.size());
+    }
+
+    private  void dropCoin(float x, float y){
+        Coin coin = Coin.get(x, y);
+        MainGame game = MainGame.get();
+        game.add(MainGame.Layer.coin, coin);
     }
 
     public void remove(GameObject gameObject) {

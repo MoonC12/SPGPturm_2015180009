@@ -7,6 +7,7 @@ import kr.ac.kpu.game.s2015180009.dragonflight.R;
 import kr.ac.kpu.game.s2015180009.dragonflight.framework.BoxCollidable;
 import kr.ac.kpu.game.s2015180009.dragonflight.framework.GameBitmap;
 import kr.ac.kpu.game.s2015180009.dragonflight.framework.GameObject;
+import kr.ac.kpu.game.s2015180009.dragonflight.ui.view.GameView;
 
 public class Player implements GameObject, BoxCollidable {
     private static final String TAG = Player.class.getSimpleName();
@@ -17,39 +18,39 @@ public class Player implements GameObject, BoxCollidable {
     private float fireTime;
     private float x, y;
     private float tx, ty;
-    private float speed;
+    private float speed = 1400;
     private GameBitmap planeBitmap;
     private GameBitmap fireBitmap;
-    float delta_x;
-    private float delta_tx;
+    private float delta_x;
 
     public Player(float x, float y, int hit) {
         this.x = x;
         this.y = y;
         this.tx = x;
         this.ty = 0;
-//        this.speed = 800;
+        this.speed = 1400;
         this.planeBitmap = new GameBitmap(R.mipmap.fighter);
         this.fireBitmap = new GameBitmap(R.mipmap.laser_0);
         this.fireTime = 0.0f;
         this.hit = hit;
     }
 
-    public void moveTo(float x, float tx) {
+    public void moveTo(float x, float y) {
         this.tx = x;
         delta_x = x - this.x;
-//        delta_tx = tx - this.tx;
-        //this.ty = this.y;
+
     }
 
     public void update() {
         MainGame game = MainGame.get();
+
         float dx = speed * game.frameTime;
+
         if (tx < x) { // move left
-            delta_x = -delta_x;
+            dx = -dx;
         }
-        x += delta_x;
-        if ((delta_x > 0 && x > tx) || (delta_x < 0 && x < tx)) {
+        x += dx;
+        if ((dx > 0 && x > tx) || (dx < 0 && x < tx)) {
             x = tx;
         }
 
@@ -58,6 +59,20 @@ public class Player implements GameObject, BoxCollidable {
             fireBullet();
             fireTime -= FIRE_INTERVAL;
         }
+
+//        if (tx < x) { // move left
+//            delta_x = -delta_x;
+//        }
+//        x += delta_x;
+//        if ((delta_x > 0 && x > tx) || (delta_x < 0 && x < tx)) {
+//            x = tx;
+//        }
+
+//        fireTime += game.frameTime;
+//        if (fireTime >= FIRE_INTERVAL) {
+//            fireBullet();
+//            fireTime -= FIRE_INTERVAL;
+//        }
     }
 
     private void fireBullet() {

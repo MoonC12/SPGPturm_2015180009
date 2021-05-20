@@ -21,10 +21,10 @@ public class Enemy implements GameObject, BoxCollidable, Recyclable {
             R.mipmap.enemy_16, R.mipmap.enemy_17, R.mipmap.enemy_18, R.mipmap.enemy_19, R.mipmap.enemy_20,
     };
     private static final String TAG = Enemy.class.getSimpleName();
-    private float x;
+    protected float x;
     private GameBitmap bitmap;
     protected int level;
-    private float y;
+    protected float y;
     private int speed;
     protected int hit;
 

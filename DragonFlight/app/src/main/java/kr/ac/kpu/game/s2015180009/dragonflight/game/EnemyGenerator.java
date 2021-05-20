@@ -39,11 +39,11 @@ public class EnemyGenerator implements GameObject {
         Random r = new Random();
         for (int i = 1; i <= 7; i += 2) {
             int x = tenth * i;
-            int[] y = {0, -150, -300, -450};
+            int y = 0;
             int level = wave / 10 - r.nextInt(3);
             if (level < 1) level = 1;
             if (level > 20) level = 20;
-            Enemy enemy = Enemy.get(level, x, y[i / 2], 700, level);
+            Enemy enemy = Enemy.get(level, x, y, 700, level);
             game.add(MainGame.Layer.enemy, enemy);
         }
     }

@@ -13,7 +13,6 @@ public class MeteorGenerator implements GameObject {
     private static final String TAG = MeteorGenerator.class.getSimpleName();
     private float time;
     private float spawnInterval;
-    private int wave;
 
     public MeteorGenerator() {
         Random r = new Random();
@@ -21,7 +20,6 @@ public class MeteorGenerator implements GameObject {
         int maxValue = 10;
         time = INITIAL_SPAWN_INTERVAL * r.nextInt(maxValue - minValue + 1) + minValue;
         spawnInterval = INITIAL_SPAWN_INTERVAL * 10.0f;
-        wave = 0;
     }
     @Override
     public void update() {
@@ -34,17 +32,12 @@ public class MeteorGenerator implements GameObject {
     }
 
     private void generate() {
-        wave++;
         //Log.d(TAG, "Generate now !!");
         MainGame game = MainGame.get();
         int tenth = GameView.view.getWidth() / 8;
-        Random r = new Random();
         for (int i = 1; i <= 7; i += 2) {
             int x = tenth * i;
             int y = 0;
-            int level = wave / 10 - r.nextInt(3);
-            if (level < 1) level = 1;
-            if (level > 20) level = 20;
             Meteor meteor = Meteor.get(x, y, 1400);
             game.add(MainGame.Layer.meteor, meteor);
         }

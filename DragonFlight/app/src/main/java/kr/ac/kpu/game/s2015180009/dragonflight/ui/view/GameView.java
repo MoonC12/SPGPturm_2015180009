@@ -77,7 +77,7 @@ public class GameView extends View {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent( MotionEvent event) {
         MainGame game = MainGame.get();
         return game.onTouchEvent(event);
     }
