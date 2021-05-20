@@ -12,7 +12,6 @@ import kr.ac.kpu.game.s2015180009.dragonflight.framework.Recyclable;
 import kr.ac.kpu.game.s2015180009.dragonflight.ui.view.GameView;
 
 public class Coin implements GameObject, BoxCollidable, Recyclable {
-    private static final String TAG = Coin.class.getSimpleName();
     protected float x;
     private final GameBitmap bitmap;
     protected float y;
@@ -22,12 +21,9 @@ public class Coin implements GameObject, BoxCollidable, Recyclable {
         this.x = x;
         this.y = y;
         speed = 1400;
-
-        Log.d(TAG, "loading bitmap for bullet");
         this.bitmap = new GameBitmap(R.mipmap.laser_0);
     }
 
-//    private static ArrayList<Bullet> recycleBin = new ArrayList<>();
     public static Coin get(float x, float y) {
         MainGame game = MainGame.get();
         Coin bullet = (Coin) game.get(Coin.class);
